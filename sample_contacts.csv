@@ -1,0 +1,6 @@
+first_name,last_name,phone_number,email,city,status
+John,Doe,+48123456789,john.doe@example.com,Warsaw,new
+Jane,Smith,+48987654321,jane.smith@example.com,Krakow,in progress
+Alice,Johnson,+48111222333,alice.johnson@example.com,Wroclaw,new
+Bob,Williams,+48444555666,bob.williams@example.com,Poznan,lost
+Emma,Brown,+48777888999,emma.brown@example.com,Gdansk,outdated

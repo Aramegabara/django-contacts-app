@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact List - Contacts Manager{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5 mb-3">
+            <i class="bi bi-people-fill"></i> Contacts
+        </h1>
+    </div>
+</div>
+
+<!-- Search and Filter Bar -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <form method="get" class="d-flex gap-2">
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control" 
+                placeholder="Search by name, email, phone, or city..."
+                value="{{ search_query }}"
+            >
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+            </button>
+            {% if search_query %}
+            <a href="{% url 'contact_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-x"></i> Clear
+            </a>
+            {% endif %}
+        </form>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-sort-down"></i> Sort By
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <a class="dropdown-item {% if current_sort == '-date_added' %}active{% endif %}" 
+                       href="?sort=-date_added{% if search_query %}&search={{ search_query }}{% endif %}">
+                        Date Added (Newest)
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item {% if current_sort == 'date_added' %}active{% endif %}" 
+                       href="?sort=date_added{% if search_query %}&search={{ search_query }}{% endif %}">
+                        Date Added (Oldest)
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item {% if current_sort == 'last_name' %}active{% endif %}" 
+                       href="?sort=last_name{% if search_query %}&search={{ search_query }}{% endif %}">
+                        Last Name (A-Z)
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item {% if current_sort == '-last_name' %}active{% endif %}" 
+                       href="?sort=-last_name{% if search_query %}&search={{ search_query }}{% endif %}">
+                        Last Name (Z-A)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Contact List -->
+{% if contacts %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for contact in contacts %}
+    <div class="col">
+        <div class="card contact-card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ contact.first_name }} {{ contact.last_name }}
+                </h5>
+                <span class="badge bg-secondary status-badge mb-3">
+                    {{ contact.status.name }}
+                </span>
+                
+                <div class="mb-2">
+                    <i class="bi bi-envelope text-muted"></i>
+                    <small>{{ contact.email }}</small>
+                </div>
+                <div class="mb-2">
+                    <i class="bi bi-telephone text-muted"></i>
+                    <small>{{ contact.phone_number }}</small>
+                </div>
+                <div class="mb-2">
+                    <i class="bi bi-geo-alt text-muted"></i>
+                    <small>{{ contact.city }}</small>
+                </div>
+                <div class="mb-2">
+                    <i class="bi bi-calendar text-muted"></i>
+                    <small>Added: {{ contact.date_added|date:"Y-m-d H:i" }}</small>
+                </div>
+                
+                <!-- Weather Information -->
+                <div class="mt-3 p-2 bg-light rounded weather-container" data-city="{{ contact.city }}">
+                    <div class="weather-loading">
+                        <i class="bi bi-cloud-sun"></i> Loading weather...
+                    </div>
+                    <div class="weather-info d-none">
+                        <strong><i class="bi bi-cloud-sun"></i> Weather:</strong><br>
+                        <small>
+                            <i class="bi bi-thermometer-half"></i> Temp: <span class="weather-temp"></span>°C<br>
+                            <i class="bi bi-droplet"></i> Humidity: <span class="weather-humidity"></span>%<br>
+                            <i class="bi bi-wind"></i> Wind: <span class="weather-wind"></span> km/h
+                        </small>
+                    </div>
+                    <div class="weather-error d-none">
+                        <small><i class="bi bi-exclamation-triangle"></i> Weather unavailable</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <div class="d-flex gap-2 justify-content-end">
+                    <a href="{% url 'contact_edit' contact.pk %}" class="btn btn-sm btn-outline-primary btn-action">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a href="{% url 'contact_delete' contact.pk %}" class="btn btn-sm btn-outline-danger btn-action">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if is_paginated %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                First
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                Previous
+            </a>
+        </li>
+        {% endif %}
+        
+        <li class="page-item active">
+            <span class="page-link">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+        </li>
+        
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                Next
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                Last
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="alert alert-info text-center">
+    <i class="bi bi-info-circle"></i>
+    {% if search_query %}
+        No contacts found matching "{{ search_query }}".
+    {% else %}
+        No contacts yet. <a href="{% url 'contact_create' %}" class="alert-link">Add your first contact</a> or 
+        <a href="{% url 'import_csv' %}" class="alert-link">import from CSV</a>.
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Weather API integration with caching
+document.addEventListener('DOMContentLoaded', function() {
+    const weatherContainers = document.querySelectorAll('.weather-container');
+    const weatherCache = new Map();
+    
+    // Load weather for all contacts
+    weatherContainers.forEach(container => {
+        const city = container.dataset.city;
+        loadWeather(container, city);
+    });
+    
+    function loadWeather(container, city) {
+        // Check cache first
+        if (weatherCache.has(city)) {
+            displayWeather(container, weatherCache.get(city));
+            return;
+        }
+        
+        // Fetch weather data
+        fetch(`/weather/${encodeURIComponent(city)}/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Weather data not available');
+                }
+                return response.json();
+            })
+            .then(data => {
+                weatherCache.set(city, data);
+                displayWeather(container, data);
+            })
+            .catch(error => {
+                showWeatherError(container);
+            });
+    }
+    
+    function displayWeather(container, data) {
+        const loadingEl = container.querySelector('.weather-loading');
+        const infoEl = container.querySelector('.weather-info');
+        const errorEl = container.querySelector('.weather-error');
+        
+        if (data && data.weather) {
+            container.querySelector('.weather-temp').textContent = data.weather.temperature || 'N/A';
+            container.querySelector('.weather-humidity').textContent = data.weather.humidity || 'N/A';
+            container.querySelector('.weather-wind').textContent = data.weather.wind_speed || 'N/A';
+            
+            loadingEl.classList.add('d-none');
+            errorEl.classList.add('d-none');
+            infoEl.classList.remove('d-none');
+        } else {
+            showWeatherError(container);
+        }
+    }
+    
+    function showWeatherError(container) {
+        const loadingEl = container.querySelector('.weather-loading');
+        const infoEl = container.querySelector('.weather-info');
+        const errorEl = container.querySelector('.weather-error');
+        
+        loadingEl.classList.add('d-none');
+        infoEl.classList.add('d-none');
+        errorEl.classList.remove('d-none');
+    }
+});
+</script>
+{% endblock %}
