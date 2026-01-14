@@ -2,6 +2,10 @@
 
 Django application for managing contacts with weather integration and REST API. Created as a recruitment task for Supra Brokers S.A.
 
+## 🌐 Live Demo
+
+**Application URL:** https://ageraskov.pythonanywhere.com/
+
 ## Features
 
 - **CRUD Operations**: Create, read, update, and delete contacts
