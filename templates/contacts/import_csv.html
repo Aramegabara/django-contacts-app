@@ -90,37 +90,3 @@ Jane,Smith,+48987654321,jane.smith@example.com,Krakow,in progress</code></pre>
     </div>
 </div>
 {% endblock %}
-
-{% block extra_js %}
-<script>
-// File validation
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('csvForm');
-    const fileInput = document.getElementById('id_csv_file');
-    
-    form.addEventListener('submit', function(event) {
-        if (!fileInput.files || fileInput.files.length === 0) {
-            event.preventDefault();
-            alert('Please select a CSV file to upload.');
-            return false;
-        }
-        
-        const file = fileInput.files[0];
-        
-        // Check file extension
-        if (!file.name.toLowerCase().endsWith('.csv')) {
-            event.preventDefault();
-            alert('Please upload a valid CSV file (.csv extension).');
-            return false;
-        }
-        
-        // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            event.preventDefault();
-            alert('File size should not exceed 5MB.');
-            return false;
-        }
-    });
-});
-</script>
-{% endblock %}
