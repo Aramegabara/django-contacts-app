@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: django-contacts-app
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py create_statuses &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - sqlite-data:/app/data
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=contacts_project.settings
+      - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true
+
+volumes:
+  sqlite-data:

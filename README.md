@@ -27,6 +27,30 @@ Django application for managing contacts with weather integration and REST API. 
 
 ## Quick Start
 
+### Option 1: Docker (Recommended) 🐳
+
+1. **Run with Docker Compose**
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Access application**
+   - Main app: http://127.0.0.1:8000/
+   - Admin panel: http://127.0.0.1:8000/admin/
+   - API: http://127.0.0.1:8000/api/contacts/
+
+3. **Create superuser (optional)**
+   ```bash
+   docker-compose exec web python manage.py createsuperuser
+   ```
+
+4. **Stop containers**
+   ```bash
+   docker-compose down
+   ```
+
+### Option 2: Manual Setup
+
 1. **Clone and setup**
    ```bash
    git clone <repository-url>
@@ -132,6 +156,11 @@ DELETE http://127.0.0.1:8000/api/contacts/1/
 - Database indexes on search/sort fields
 - `select_related()` for ForeignKey optimization
 - Client-side caching for weather data
+
+## Bonus Features (Additional Tasks)
+
+✅ **Docker Support**: Full Docker and Docker Compose configuration for easy deployment
+✅ **Caching**: Weather API caching (30 min for coordinates, 15 min for weather data)
 
 ---
 
