@@ -172,3 +172,10 @@ def import_contacts_csv(request):
         form = CSVImportForm()
     
     return render(request, 'contacts/import_csv.html', {'form': form})
+
+
+def api_test_view(request):
+    """
+    Display API testing page.
+    """
+    return render(request, 'contacts/api_test.html')

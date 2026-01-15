@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}API Testing{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-code-square"></i> REST API Testing</h1>
+
+    <!-- API Endpoints Info -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Available Endpoints</h5>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>GET</strong> /api/contacts/ - List all contacts</li>
+                <li class="list-group-item"><strong>POST</strong> /api/contacts/ - Create new contact</li>
+                <li class="list-group-item"><strong>GET</strong> /api/contacts/{id}/ - Get contact details</li>
+                <li class="list-group-item"><strong>PUT</strong> /api/contacts/{id}/ - Update contact</li>
+                <li class="list-group-item"><strong>DELETE</strong> /api/contacts/{id}/ - Delete contact</li>
+                <li class="list-group-item"><strong>GET</strong> /api/statuses/ - List all statuses</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- GET All Contacts -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">GET - List All Contacts</h5>
+        </div>
+        <div class="card-body">
+            <button id="btnGetContacts" class="btn btn-success">
+                <i class="bi bi-download"></i> Fetch Contacts
+            </button>
+            <pre id="contactsList" class="mt-3 bg-light p-3 border rounded" style="max-height: 400px; overflow-y: auto;"></pre>
+        </div>
+    </div>
+
+    <!-- POST Create Contact -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">POST - Create New Contact</h5>
+        </div>
+        <div class="card-body">
+            <form id="createContactForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="createFirstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="createFirstName" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="createLastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="createLastName" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="createEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="createEmail" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="createPhone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="createPhone" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="createCity" class="form-label">City</label>
+                        <input type="text" class="form-control" id="createCity" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="createStatus" class="form-label">Status</label>
+                        <select class="form-select" id="createStatus" required>
+                            <!-- Loaded dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-info">
+                    <i class="bi bi-plus-circle"></i> Create Contact
+                </button>
+            </form>
+            <pre id="createResult" class="mt-3 bg-light p-3 border rounded" style="display: none;"></pre>
+        </div>
+    </div>
+
+    <!-- PUT Update Contact -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">PUT - Update Contact</h5>
+        </div>
+        <div class="card-body">
+            <form id="updateContactForm">
+                <div class="mb-3">
+                    <label for="updateContactId" class="form-label">Contact ID</label>
+                    <input type="number" class="form-control" id="updateContactId" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="updateFirstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="updateFirstName" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="updateLastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="updateLastName" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="updateEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="updateEmail" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="updatePhone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="updatePhone" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="updateCity" class="form-label">City</label>
+                        <input type="text" class="form-control" id="updateCity" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="updateStatus" class="form-label">Status</label>
+                        <select class="form-select" id="updateStatus" required>
+                            <!-- Loaded dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Update Contact
+                </button>
+            </form>
+            <pre id="updateResult" class="mt-3 bg-light p-3 border rounded" style="display: none;"></pre>
+        </div>
+    </div>
+
+    <!-- DELETE Contact -->
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">DELETE - Remove Contact</h5>
+        </div>
+        <div class="card-body">
+            <form id="deleteContactForm">
+                <div class="mb-3">
+                    <label for="deleteContactId" class="form-label">Contact ID</label>
+                    <input type="number" class="form-control" id="deleteContactId" required>
+                </div>
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete Contact
+                </button>
+            </form>
+            <pre id="deleteResult" class="mt-3 bg-light p-3 border rounded" style="display: none;"></pre>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api-test.js' %}"></script>
+{% endblock %}
